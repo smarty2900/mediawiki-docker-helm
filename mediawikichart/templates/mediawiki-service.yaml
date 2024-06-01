@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-mediawiki-app-service
+spec:
+  selector:
+    app: {{ .Release.Name }}-mediawiki-app
+  ports:
+      - protocol: TCP
+        port: 8080
+        targetPort: 80
+  type: LoadBalancer
+

@@ -1,0 +1,20 @@
+replicaCount: 1
+
+
+mediawikiApp:
+  image:
+    repository: helmacrrepo.azurecr.io/mediawiki
+    pullPolicy: Always
+    tag: latest
+
+mysqlVolume:
+  persistentVolumeClaim:
+    storageSize: 500Mi  #1Gi
+
+  persistentVolume:
+    storageSize: 500Mi  #1Gi
+    pathOnHost: /var/lib/mysql  # Replace this with the actual path on your host machine
+
+
+  mountPath: /var/lib/mysql
+
