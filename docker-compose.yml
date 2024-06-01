@@ -1,0 +1,28 @@
+version: '3.1'
+
+services:
+  mediawiki:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      - MEDIAWIKI_DB_TYPE=mysql
+      - MEDIAWIKI_DB_HOST=db
+      - MEDIAWIKI_DB_NAME=mediawiki
+      - MEDIAWIKI_DB_USER=wikiuser
+      - MEDIAWIKI_DB_PASSWORD=secret
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mediawiki
+      MYSQL_USER: wikiuser
+      MYSQL_PASSWORD: secret
+    volumes:
+      - db-data:/var/lib/mysql
+
+volumes:
+  db-data:
