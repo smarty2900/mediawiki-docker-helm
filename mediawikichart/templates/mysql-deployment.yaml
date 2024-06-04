@@ -13,24 +13,35 @@ spec:
         app: {{ .Release.Name }}-mysql
     spec:
       containers:
-          - name: {{ .Release.Name }}-mysql-container
-            image: mysql:latest
-            env:
-              - name: MYSQL_ROOT_PASSWORD
-                value: rootpassword
-              - name: MYSQL_DATABASE
-                value: mediawiki
-              - name: MYSQL_USER
-                value: wikiuser
-              - name: MYSQL_PASSWORD
-                value: secret
-            ports:
-              - containerPort: 3306
-            volumeMounts:
-              - name: {{ .Release.Name }}-mysql-persistent-storage
-                mountPath: {{ .Values.mysqlVolume.mountPath }}
+        - name: {{ .Release.Name }}-mysql-container
+          image: mysql:latest
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-root-password-secret
+                  key: mysql-root-password
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-database-secret
+                  key: mysql-database
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-user-secret
+                  key: mysql-user
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-password-secret
+                  key: mysql-password
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: {{ .Release.Name }}-mysql-persistent-storage
+              mountPath: {{ .Values.mysqlVolume.mountPath }}
       volumes:
         - name: {{ .Release.Name }}-mysql-persistent-storage
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-mysql-pvc
-
