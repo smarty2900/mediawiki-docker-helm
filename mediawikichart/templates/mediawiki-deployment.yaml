@@ -1,32 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-mediawiki-app-deployment
+  name: mediawiki-app-deployment
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-mediawiki-app
+      app: mediawiki-app
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-mediawiki-app
+        app: mediawiki-app
     spec:
       containers:
-        - name: {{ .Release.Name }}-mediawiki-app-container
+        - name: mediawiki-app-container
           image: {{ .Values.mediawikiApp.image.repository }}:{{ .Values.mediawikiApp.image.tag }}
           imagePullPolicy: {{ .Values.mediawikiApp.image.pullPolicy }}
           ports:
             - containerPort: 80
           env:
             - name: MEDIAWIKI_DB_TYPE
-              value: "mysql"
+              valueFrom:
+                secretKeyRef:
+                  name: mediawiki-db-type-secret
+                  key: mediawiki-db-type
             - name: MEDIAWIKI_DB_HOST
-              value: "db"
+              valueFrom:
+                secretKeyRef:
+                  name: mediawiki-db-host-secret
+                  key: mediawiki-db-host
             - name: MEDIAWIKI_DB_NAME
-              value: "mediawiki"
+              valueFrom:
+                secretKeyRef:
+                  name: mediawiki-db-name-secret
+                  key: mediawiki-db-name
             - name: MEDIAWIKI_DB_USER
-              value: "wikiuser"
+              valueFrom:
+                secretKeyRef:
+                  name: mediawiki-db-user-secret
+                  key: mediawiki-db-user
             - name: MEDIAWIKI_DB_PASSWORD
-              value: "secret"
-
+              valueFrom:
+                secretKeyRef:
+                  name: mediawiki-db-password-secret
+                  key: mediawiki-db-password
